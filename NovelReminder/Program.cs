@@ -50,10 +50,10 @@ namespace NovelReminder
 
                     email.SendEmail(new MailOptions
                     {
-                        Recievers = new List<string> { "2016231075@qq.com" },
+                        Recievers = new List<string> { "xxxx@qq.com" },
                         Body = articleContent.Value,
                         Subject = articleTitle.Value,
-                        From = "1743432766@qq.com"
+                        From = "xxxx@qq.com"
                     });
 
                 }
