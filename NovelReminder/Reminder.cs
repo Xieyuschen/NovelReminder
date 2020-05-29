@@ -23,11 +23,15 @@ namespace NovelReminder
         {
             dbService = new DatabaseService();
             scanner = new Scanner();
+
+            //27-32行获取QQ邮箱的Smtp密码
             string jsonfile = @"C:\Users\DELL\AppData\Roaming\Microsoft\UserSecrets\ee6f7777-9738-4ddc-b287-7868412d3df1\secrets.json";
             StreamReader file = File.OpenText(jsonfile);
             JsonTextReader reader = new JsonTextReader(file);
             JObject o = (JObject)JToken.ReadFrom(reader);
             EmailToken = o["password"].ToString();
+            //明文密码的话，只需要把27-32行内容去掉，加上语句：
+            //EmailToken="输入QQ邮箱Smtp的授权码"
             dic = new Dictionary<int, string>();
             this.Receivers = receivers;
         }
