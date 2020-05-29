@@ -56,7 +56,8 @@ namespace NovelReminder
             {
                 Recievers = new List<string> { "2016231075@qq.com" },
                 Body = articleContent.Value,
-                Subject = articleTitle.Value,
+                Subject ="<h1>When you receive this email,it means your have booked the NovalUpdateRemind successfully!</h1>"+
+                        articleTitle.Value,
                 From = "1743432766@qq.com"
             });
 

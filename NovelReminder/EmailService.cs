@@ -52,6 +52,7 @@ namespace NovelReminder
             msg.SubjectEncoding = options.SubjectEncode;
             msg.From =new MailAddress(options.From,"Schidmt");
             msg.IsBodyHtml = true;
+         
             client.Send(msg);
         }
     }
