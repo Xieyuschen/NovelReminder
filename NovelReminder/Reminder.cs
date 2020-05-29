@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -16,9 +17,9 @@ namespace NovelReminder
         private DatabaseService dbService;
         private Scanner scanner;
         private string EmailToken;
-        public IEnumerable<string> receivers { get; set; }
+        public IEnumerable<string> Receivers { get; set; }
         private Dictionary<int,string> dic;
-        public Reminder()
+        public Reminder(IEnumerable<string> receivers)
         {
             dbService = new DatabaseService();
             scanner = new Scanner();
@@ -28,31 +29,11 @@ namespace NovelReminder
             JObject o = (JObject)JToken.ReadFrom(reader);
             EmailToken = o["password"].ToString();
             dic = new Dictionary<int, string>();
-        }
-        public async ValueTask ReadHtmlAsync(string url)
-        {
-            var ContentInfo = await scanner.GetArticleAsync(url);
-            Regex latestChapter = new Regex("(?<=<a href=\"/\\d*/)(.*?html).*?(?<=第)(\\d*)(?=.*?)");
-            var results= latestChapter.Matches(ContentInfo);
-            foreach(Match item in results)
-            {
-                dic.TryAdd(int.Parse(item.Groups[2].Value), item.Groups[1].Value);
-            }
-        }
-
-        public async ValueTask SendNovalDetailsAsync(string novalPageUrl,bool IsInitia=false)
-        {
-            var content = await scanner.GetArticleAsync(novalPageUrl);
-            Regex rcontent = new Regex("(?<=<div\\sid=\"content\">)[\\S\\s]*?(?=</div>)");
-            Regex rtitle = new Regex("(?<=<title>).*?(?=_)");
-            var articleContent = rcontent.Match(content);
-            var articleTitle = rtitle.Match(content);
-            EmailSendAsync(articleContent, articleTitle, IsInitia);
-
+            this.Receivers = receivers;
         }
         public async ValueTask InitializeReminder(string url)
         {
-
+            await ReadHtmlAndUpdateDicAsync(url);
             //初始化时将当前信息加入到数据库中去
             var latestNum = dic.Keys.Max();
             await dbService.InsertOrUpdateOneAsync(url, latestNum);
@@ -62,14 +43,40 @@ namespace NovelReminder
             string articleUrl = url + dic[latestNum];
 
             //获取最新一期小说的内容和标题
-            await SendNovalDetailsAsync(articleUrl, true);
+            await SendNovelDetailsAsync(articleUrl, true);
 
         }
-        public async ValueTask AvailableOrNotAsync(string url)
+        public async ValueTask CheckAnyNewAsync(string url)
         {
-
+            await ReadHtmlAndUpdateDicAsync(url);
+            int numDb = dbService.GetLastChapter(url);
+            for (int i = numDb + 1; i <= dic.Keys.Max(); i++)
+            {
+                await SendNovelDetailsAsync(url + dic[i]);
+            }
+            await dbService.UpdateAsync(url, dic.Keys.Max());
         }
 
+        private async ValueTask ReadHtmlAndUpdateDicAsync(string url)
+        {
+            var ContentInfo = await scanner.GetArticleAsync(url);
+            Regex latestChapter = new Regex("(?<=<a href=\"/\\d*/)(.*?html).*?(?<=第)(\\d*)(?=.*?)");
+            var results= latestChapter.Matches(ContentInfo);
+            foreach(Match item in results)
+            {
+                dic.TryAdd(int.Parse(item.Groups[2].Value), item.Groups[1].Value);
+            }
+        }
+        private async ValueTask SendNovelDetailsAsync(string novalPageUrl,bool IsInitia=false)
+        {
+            var content = await scanner.GetArticleAsync(novalPageUrl);
+            Regex rcontent = new Regex("(?<=<div\\sid=\"content\">)[\\S\\s]*?(?=</div>)");
+            Regex rtitle = new Regex("(?<=<title>).*?(?=_)");
+            var articleContent = rcontent.Match(content);
+            var articleTitle = rtitle.Match(content);
+            EmailSendAsync(articleContent, articleTitle, IsInitia);
+
+        }
         private void EmailSendAsync(Match articleContent,Match articleTitle,bool IsInitia=false)
         {
             EmailService email = new EmailService(new SmtpClientOptions
@@ -78,14 +85,14 @@ namespace NovelReminder
                 Token = EmailToken,
             });
             string initialStr = IsInitia
-                ? "<h1>When you receive this email,it means your have booked the NovalUpdateRemind successfully!</h1>"
+                ? "<h1>When you receive this email,it means you have booked the NovelUpdateReminder successfully!</h1>"
                 : "";
 
             email.SendEmail(new MailOptions
             {
-                Recievers = receivers,
-                Body = articleContent.Value,
-                Subject =initialStr + articleTitle.Value,
+                Recievers = Receivers,
+                Body = initialStr + articleContent.Value,
+                Subject =articleTitle.Value,
                 From = "1743432766@qq.com"
             });
         }

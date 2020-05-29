@@ -57,7 +57,22 @@ namespace NovelReminder
                 Console.WriteLine(e.Message);
             }
         }
-
+        public async ValueTask UpdateAsync(string url,int lastUpdate)
+        {
+            try
+            {
+                var update = "update UpdateRecords set LastChapter = @lastUpdate where Url = @url";
+                SqlCommand insert = new SqlCommand(update, _connection);
+                insert.Parameters.Add("@url", SqlDbType.VarChar, 255).Value = url;
+                insert.Parameters.Add("@lastUpdate", SqlDbType.Int).Value = lastUpdate;
+                await insert.PrepareAsync();
+                await insert.ExecuteScalarAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
         public int GetLastChapter(string url)
         {
             var query = "Select LastChapter from UpdateRecords";// where Url=@url";
