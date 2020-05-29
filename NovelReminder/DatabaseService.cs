@@ -81,7 +81,7 @@ namespace NovelReminder
             comm.Prepare();
             SqlDataReader reader = comm.ExecuteReader();
             reader.Read();
-            return reader.GetInt32(0);
+            return reader.GetInt32(1);
         }
         private static string GetConnectionStrings(string databaseName)
         {

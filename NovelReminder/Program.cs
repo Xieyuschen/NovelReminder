@@ -23,9 +23,10 @@ namespace NovelReminder
             {
                 try
                 {
-                    await reminder.CheckAnyNewAsync(url);
-                    await Task.Delay(TimeSpan.FromSeconds(10));
-
+                    if(!(await reminder.CheckAnyNewAsync(url)))
+                    {
+                        await Task.Delay(TimeSpan.FromSeconds(10));
+                    }
                 }
                 catch(Exception e)
                 {

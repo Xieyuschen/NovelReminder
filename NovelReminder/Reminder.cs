@@ -46,15 +46,25 @@ namespace NovelReminder
             await SendNovelDetailsAsync(articleUrl, true);
 
         }
-        public async ValueTask CheckAnyNewAsync(string url)
+        /// <summary>
+        /// return false if there are nothing new
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        public async ValueTask<bool> CheckAnyNewAsync(string url)
         {
             await ReadHtmlAndUpdateDicAsync(url);
             int numDb = dbService.GetLastChapter(url);
+            if (numDb == dic.Keys.Max())
+            {
+                return false;
+            }
             for (int i = numDb + 1; i <= dic.Keys.Max(); i++)
             {
                 await SendNovelDetailsAsync(url + dic[i]);
             }
             await dbService.UpdateAsync(url, dic.Keys.Max());
+            return true;
         }
 
         private async ValueTask ReadHtmlAndUpdateDicAsync(string url)
