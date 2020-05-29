@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
-
 namespace NovelReminder
 {
     class Program
@@ -14,9 +13,9 @@ namespace NovelReminder
         static async System.Threading.Tasks.Task Main(string[] args)
         {
             DatabaseService service = new DatabaseService();
-            await service.InsertOrUpdateOneAsync("/w123456", 12);
-            var re = service.GetLastChapter("w/123456");
-            Console.WriteLine(re);
+            //await service.InsertOrUpdateOneAsync("/w123456", 12);
+            //var re = service.GetLastChapter("w/123456");
+            //Console.WriteLine(re);
             //const string url = @"http://www.biquge.se/12809/";
             //var scanner = new Scanner();
             //string jsonfile = @"C:\Users\DELL\AppData\Roaming\Microsoft\UserSecrets\ee6f7777-9738-4ddc-b287-7868412d3df1\secrets.json";

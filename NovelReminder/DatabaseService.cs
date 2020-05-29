@@ -5,21 +5,24 @@ using System.Data.SqlClient;
 using System.Data.SqlTypes;
 using System.Text;
 using System.Threading.Tasks;
+using System.Configuration;
+using System.Runtime.CompilerServices;
 
 namespace NovelReminder
 {
+
     class DatabaseService
     {
-        const string connectstring = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=NovalReminderDatabase;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
         private SqlConnection _connection;
         public DatabaseService()
         {
-            _connection = new SqlConnection(connectstring);
+            var connstring= GetConnectionStrings("Database");
             try
             {
+                _connection = new SqlConnection(connstring);
                 _connection.Open();
                 SqlCommand createtable = new SqlCommand(
-                    "IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'UpdateRecords') AND type in (N'U'))"+
+                    "IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'UpdateRecords') AND type in (N'U'))" +
                     "Create Table UpdateRecords" +
                     "(Url varchar(30) Primary Key not null,LastChapter int Not null)"
                     , _connection);
@@ -64,6 +67,23 @@ namespace NovelReminder
             SqlDataReader reader = comm.ExecuteReader();
             reader.Read();
             return reader.GetInt32(0);
+        }
+        private static string GetConnectionStrings(string databaseName)
+        {
+            ConnectionStringSettingsCollection settings =
+                ConfigurationManager.ConnectionStrings;
+
+            if (settings != null)
+            {
+                foreach (ConnectionStringSettings cs in settings)
+                {
+                    if (cs.Name == databaseName)
+                    {
+                        return cs.ConnectionString;
+                    }
+                }
+            }
+            throw new Exception("Haven't find the database!");
         }
     }
 }
