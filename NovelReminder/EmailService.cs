@@ -10,7 +10,7 @@ namespace NovelReminder
     public class MailOptions
     {
         public string From { get; set; }
-        public List<string> Recievers { get; set; }
+        public IEnumerable<string> Recievers { get; set; }
         public string Subject { get; set; }
         public string Body { get; set; }
         public Encoding SubjectEncode { get; set; } = Encoding.UTF8;
