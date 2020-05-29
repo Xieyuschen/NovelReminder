@@ -50,6 +50,7 @@ namespace NovelReminder
                 {
                     throw new Exception("The Request failed!");
                 }
+                
             }
         }
         
