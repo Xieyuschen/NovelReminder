@@ -9,7 +9,7 @@ namespace NovelReminder
 {
     class Scanner
     {
-        private List<string> NovalUrls;
+        //private List<string> NovalUrls;
         public async ValueTask<bool> ScanNovalUpdated(string url)
         {
             using (var client = new HttpClient())
@@ -22,9 +22,7 @@ namespace NovelReminder
                     //如果是最新的就返回false
                     //do something..
 
-                    //================================
-                    //为了暂时测试就先返回true，以后再改
-                    return true;
+
                     string responseBodyAsText = await response.Content.ReadAsStringAsync();
                     Console.WriteLine();
                     Regex r = new Regex(@"<dd>.*?</dd>");
@@ -50,8 +48,9 @@ namespace NovelReminder
                 {
                     throw new Exception("The Request failed!");
                 }
-                
             }
+              
+            
         }
         
     }
