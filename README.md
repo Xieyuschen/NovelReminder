@@ -24,7 +24,8 @@
 </configuration>
 ```
 - 使用Smtp发送邮件  
-在这里我们使用qq的Smtp服务器进行邮件发送，[QQ邮箱开启Smtp](https://jingyan.baidu.com/article/6079ad0eb14aaa28fe86db5a.html)。之后在`Reminder.cs`中把`EmailToken`的值设为所得的授权码。
+在这里我们使用qq的Smtp服务器进行邮件发送，[QQ邮箱开启Smtp](https://jingyan.baidu.com/article/6079ad0eb14aaa28fe86db5a.html)。  
+之后需要设置Smtp的相关属性。需要修改`Reminder.cs`第98行与110行的字符串为你自己的QQ邮箱。在`Reminder.cs`中把`EmailToken`的值设为所得的授权码。
 
 4. 指定要进行更新推送的小说url  
 [点击这里搜索想要的小说](http://www.biquge.se/).  
