@@ -113,7 +113,7 @@ namespace NovelReminder
                 Token = EmailToken,
             });
             string initialStr = IsInitia
-                ? "<h1>When you receive this email,it means you have booked the NovelUpdateReminder successfully!</h1>"
+                ? "<h1>When you receive this email,it means you have booked the NovelUpdateReminder successfully!         </h1>"
                 : "";
 
             email.SendEmail(new MailOptions
