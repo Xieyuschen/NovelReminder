@@ -76,11 +76,11 @@ namespace NovelReminder
                 return false;
             }
             int i = 0;
-            for (i = numDb; i < dic.Keys.Max(); i++)
+            for (i = numDb+1; i <= dic.Keys.Max(); i++)
             {
                 await SendNovelDetailsAsync(url + dic[i]);
             }
-            Console.WriteLine(i);
+            Console.WriteLine(i-1);
             await dbService.UpdateAsync(url, dic.Keys.Max());
             return true;
         }
