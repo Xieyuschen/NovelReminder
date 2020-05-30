@@ -9,7 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-
+using System.Windows;
 namespace NovelReminder
 {
     class Program
@@ -18,9 +18,10 @@ namespace NovelReminder
         {
             const string url = "http://www.biquge.se/12809/";
             Reminder reminder = new Reminder(new List<string> { "2016231075@qq.com" });
-            await reminder.InitializeReminder(url);
+            await reminder.InitializeReminderAsync(url);
             while (true)
             {
+                
                 try
                 {
                     if(!(await reminder.CheckAnyNewAsync(url)))

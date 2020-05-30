@@ -24,14 +24,16 @@ namespace NovelReminder
                 SqlCommand createtable = new SqlCommand(
                     "IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'UpdateRecords') AND type in (N'U'))" +
                     "Create Table UpdateRecords" +
-                    "(Url varchar(30) Primary Key not null,LastChapter int Not null)"
+                    "(Url varchar(30) Primary Key not null," +
+                    "LastChapter int Not null," +
+                    "IsInit bit Not null)"
                     , _connection);
                 createtable.ExecuteNonQuery();
                 //Console.WriteLine(version);
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                Console.WriteLine("Dataservice36"+e.Message);
             }
         }
         ~DatabaseService()
@@ -45,16 +47,17 @@ namespace NovelReminder
                 var query = $"IF EXISTS(select * from UpdateRecords where Url=@url) " +
                     $"update UpdateRecords set LastChapter = @lastUpdate where Url=@url " +
                     "ELSE" +
-                    $" insert into UpdateRecords(Url,LastChapter) values(@url,@lastUpdate)";
+                    $" insert into UpdateRecords(Url,LastChapter,IsInit) values(@url,@lastUpdate,@flag)";
                 SqlCommand insert = new SqlCommand(query, _connection);
                 insert.Parameters.Add("@url", SqlDbType.VarChar,255).Value = url;
                 insert.Parameters.Add("@lastUpdate", SqlDbType.Int).Value = lastUpdate;
+                insert.Parameters.Add("@flag", SqlDbType.Bit).Value = false;
                 await insert.PrepareAsync();
                 await insert.ExecuteScalarAsync();
             }
             catch(Exception e)
             {
-                Console.WriteLine(e.Message);
+                Console.WriteLine("Dataservice60"+e.Message);
             }
         }
         public async ValueTask UpdateAsync(string url,int lastUpdate)
@@ -73,14 +76,41 @@ namespace NovelReminder
                 Console.WriteLine(e.Message);
             }
         }
-        public int GetLastChapter(string url)
+        public async ValueTask UpdateAsync(string url,bool isinit)
+        {
+            try
+            {
+                var update = "update UpdateRecords set IsInit=@isinit where Url = @url";
+                SqlCommand insert = new SqlCommand(update, _connection);
+                insert.Parameters.Add("@url", SqlDbType.VarChar, 255).Value = url;
+                insert.Parameters.Add("@isinit", SqlDbType.Bit).Value = isinit;
+                await insert.PrepareAsync();
+                await insert.ExecuteScalarAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+        public async ValueTask<bool> GetIsInit(string url)
+        {
+            var query = "Select IsInit from UpdateRecords where Url=@url";
+
+            var comm = new SqlCommand(query, _connection);
+            comm.Parameters.Add("@url", SqlDbType.VarChar, 255).Value = url;
+            comm.Prepare();
+            SqlDataReader reader =await comm.ExecuteReaderAsync();
+            await reader.ReadAsync();
+            return reader.GetBoolean(2);
+        }
+        public async ValueTask<int> GetLastChapterAsync(string url)
         {
             var query = "Select LastChapter from UpdateRecords";// where Url=@url";
             var comm = new SqlCommand(query, _connection);
             //comm.Parameters.Add("@url", SqlDbType.VarChar, 255).Value = url;
             comm.Prepare();
-            SqlDataReader reader = comm.ExecuteReader();
-            reader.Read();
+            SqlDataReader reader =await comm.ExecuteReaderAsync();
+            await reader.ReadAsync();
             return reader.GetInt32(1);
         }
         private static string GetConnectionStrings(string databaseName)

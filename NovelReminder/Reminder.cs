@@ -8,7 +8,9 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace NovelReminder
 {
@@ -35,20 +37,30 @@ namespace NovelReminder
             dic = new Dictionary<int, string>();
             this.Receivers = receivers;
         }
-        public async ValueTask InitializeReminder(string url)
+        public async ValueTask InitializeReminderAsync(string url)
         {
-            await ReadHtmlAndUpdateDicAsync(url);
-            //初始化时将当前信息加入到数据库中去
-            var latestNum = dic.Keys.Max();
-            await dbService.InsertOrUpdateOneAsync(url, latestNum);
+            try
+            {
+                if(await dbService.GetIsInit(url))
+                {
+                    Console.WriteLine("The program is running successfully!");
+                    //MessageBox.Show();
+                }
+            }
+            catch(Exception)
+            {
+                await ReadHtmlAndUpdateDicAsync(url);
+                //初始化时将当前信息加入到数据库中去
+                var latestNum = dic.Keys.Max();
+                await dbService.InsertOrUpdateOneAsync(url, latestNum);
 
-            //初始化成功，发送最新的一章表示成功订阅
-            //获得最新一篇文章的内容
-            string articleUrl = url + dic[latestNum];
-
-            //获取最新一期小说的内容和标题
-            await SendNovelDetailsAsync(articleUrl, true);
-
+                //初始化成功，发送最新的一章表示成功订阅
+                //获得最新一篇文章的内容
+                string articleUrl = url + dic[latestNum];
+                //获取最新一期小说的内容和标题
+                await SendNovelDetailsAsync(articleUrl, true);
+                await dbService.UpdateAsync(url, true);
+            }
         }
         /// <summary>
         /// return false if there are nothing new
@@ -58,7 +70,7 @@ namespace NovelReminder
         public async ValueTask<bool> CheckAnyNewAsync(string url)
         {
             await ReadHtmlAndUpdateDicAsync(url);
-            int numDb = dbService.GetLastChapter(url);
+            int numDb =await dbService.GetLastChapterAsync(url);
             if (numDb == dic.Keys.Max())
             {
                 return false;
