@@ -47,7 +47,7 @@ namespace NovelReminder
                     //MessageBox.Show();
                 }
             }
-            catch(Exception)
+            catch(Exception e)
             {
                 await ReadHtmlAndUpdateDicAsync(url);
                 //初始化时将当前信息加入到数据库中去
@@ -75,10 +75,12 @@ namespace NovelReminder
             {
                 return false;
             }
-            for (int i = numDb + 1; i <= dic.Keys.Max(); i++)
+            int i = 0;
+            for (i = numDb; i < dic.Keys.Max(); i++)
             {
                 await SendNovelDetailsAsync(url + dic[i]);
             }
+            Console.WriteLine(i);
             await dbService.UpdateAsync(url, dic.Keys.Max());
             return true;
         }

@@ -21,7 +21,7 @@ namespace NovelReminder
             await reminder.InitializeReminderAsync(url);
             while (true)
             {
-                
+
                 try
                 {
                     if(!(await reminder.CheckAnyNewAsync(url)))
@@ -29,9 +29,9 @@ namespace NovelReminder
                         await Task.Delay(TimeSpan.FromSeconds(10));
                     }
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
+                    Console.WriteLine("DetectRecycle:  " + e.Message);
                 }
             }
         }
