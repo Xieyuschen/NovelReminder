@@ -16,26 +16,23 @@ namespace NovelReminder
 {
     class Reminder
     {
+        public IEnumerable<string> Receivers { get; set; }
+
         private DatabaseService dbService;
         private Scanner scanner;
         private string EmailToken;
-        public IEnumerable<string> Receivers { get; set; }
-        private Dictionary<int,string> dic;
-        public Reminder(IEnumerable<string> receivers)
+        private string Sender;
+        private Dictionary<int, string> dic;
+        public Reminder(IEnumerable<string> receivers, string sender, string emailToken)
         {
             dbService = new DatabaseService();
             scanner = new Scanner();
-
-            //27-32行获取QQ邮箱的Smtp密码
-            string jsonfile = @"C:\Users\DELL\AppData\Roaming\Microsoft\UserSecrets\ee6f7777-9738-4ddc-b287-7868412d3df1\secrets.json";
-            StreamReader file = File.OpenText(jsonfile);
-            JsonTextReader reader = new JsonTextReader(file);
-            JObject o = (JObject)JToken.ReadFrom(reader);
-            EmailToken = o["password"].ToString();
-            //明文密码的话，只需要把27-32行内容去掉，加上语句：
-            //EmailToken="输入QQ邮箱Smtp的授权码"
+            if (sender == null || emailToken == null)
+                throw new Exception("Sender or Token cannot be null!");
+            Sender = sender;
+            EmailToken = emailToken;
             dic = new Dictionary<int, string>();
-            this.Receivers = receivers;
+            Receivers = receivers;
         }
         public async ValueTask InitializeReminderAsync(string url)
         {
@@ -84,7 +81,6 @@ namespace NovelReminder
             await dbService.UpdateAsync(url, dic.Keys.Max());
             return true;
         }
-
         private async ValueTask ReadHtmlAndUpdateDicAsync(string url)
         {
             var ContentInfo = await scanner.GetArticleAsync(url);
@@ -121,7 +117,7 @@ namespace NovelReminder
                 Recievers = Receivers,
                 Body = initialStr + articleContent.Value,
                 Subject =articleTitle.Value,
-                From = "1743432766@qq.com"
+                From = Sender
             });
         }
     }
