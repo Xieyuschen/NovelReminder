@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Configuration;
 using System.Runtime.CompilerServices;
-
 namespace NovelReminder
 {
 

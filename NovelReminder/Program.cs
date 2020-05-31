@@ -12,32 +12,18 @@ using System.Threading.Tasks;
 using System.Windows;
 namespace NovelReminder
 {
+    //oy2p2bsacdwfbcilnauasmc5somtdynutpr4p4xzofybj4
     class Program
     {
-        static async System.Threading.Tasks.Task Main(string[] args)
+        private static async System.Threading.Tasks.Task Main(string[] args)
         {
             string jsonfile = @"C:\Users\DELL\AppData\Roaming\Microsoft\UserSecrets\ee6f7777-9738-4ddc-b287-7868412d3df1\secrets.json";
             StreamReader file = File.OpenText(jsonfile);
             JsonTextReader reader = new JsonTextReader(file);
             JObject o = (JObject)JToken.ReadFrom(reader);
             var emailToken = o["password"].ToString();
-            const string url = "http://www.biquge.se/12809/";
-            Reminder reminder = new Reminder(new List<string> { "2016231075@qq.com" },"1743432766@qq.com",emailToken);
-            await reminder.InitializeReminderAsync(url);
-            while (true)
-            {
-                try
-                {
-                    if(!(await reminder.CheckAnyNewAsync(url)))
-                    {
-                        await Task.Delay(TimeSpan.FromSeconds(10));
-                    }
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("DetectRecycle:  " + e.Message);
-                }
-            }
+            Reminder reminder = new Reminder("http://www.biquge.se/12809/", "2016231075@qq.com", "1743432766@qq.com", emailToken);
+            await reminder.StartAsync();
         }
     }
 }

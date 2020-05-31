@@ -24,9 +24,7 @@ namespace NovelReminder
         public string Account { get; set; }
         public string Token { get; set; }
     }
-    //cmltfxjdhjezcchb
 
-    //谁发的邮件是已经定好的，但是发送邮件的标题、内容等信息是
     public class EmailService
     {
         private SmtpClient client;
@@ -36,8 +34,7 @@ namespace NovelReminder
             client.Host = options.Host;
             client.Port = options.Port;
             client.EnableSsl = options.EnableSsl;
-            client.Credentials = new NetworkCredential(options.Account, options.Token);
-           
+            client.Credentials = new NetworkCredential(options.Account, options.Token);          
         }
         public void SendEmail(MailOptions options)
         {

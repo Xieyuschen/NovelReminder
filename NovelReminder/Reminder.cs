@@ -6,6 +6,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Policy;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -17,14 +18,18 @@ namespace NovelReminder
     class Reminder
     {
         public IEnumerable<string> Receivers { get; set; }
+        public double Interval { get; set; }
 
+        private IEnumerable<string> BookedUrl;
         private DatabaseService dbService;
         private Scanner scanner;
         private string EmailToken;
         private string Sender;
         private Dictionary<int, string> dic;
-        public Reminder(IEnumerable<string> receivers, string sender, string emailToken)
+        public Reminder(IEnumerable<string> urls,IEnumerable<string> receivers, string sender, string emailToken,double scanInterval=10)
         {
+            Interval = scanInterval;
+            BookedUrl = urls;
             dbService = new DatabaseService();
             scanner = new Scanner();
             if (sender == null || emailToken == null)
@@ -34,6 +39,42 @@ namespace NovelReminder
             dic = new Dictionary<int, string>();
             Receivers = receivers;
         }
+        public Reminder(string url,string receivers, string sender, string emailToken, double scanInterval = 10)
+        {
+            Interval = scanInterval;
+            BookedUrl = new List<string>{ url };
+            dbService = new DatabaseService();
+            scanner = new Scanner();
+            if (sender == null || emailToken == null)
+                throw new Exception("Sender or Token cannot be null!");
+            Sender = sender;
+            EmailToken = emailToken;
+            dic = new Dictionary<int, string>();
+            Receivers =new List<string> { receivers };
+        }
+
+        public async ValueTask StartAsync()
+        {
+            var url = BookedUrl.FirstOrDefault();
+            await InitializeReminderAsync(url);
+            int i = 1;
+            while (true)
+            {
+                try
+                {
+                    if (!(await CheckAnyNewAsync(url)))
+                    {
+                        Console.WriteLine($"Scan {i++} times");
+                        await Task.Delay(TimeSpan.FromSeconds(Interval));
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("DetectRecycleErrorMessage:  " + e.Message);
+                }
+            }
+        }
+        
         public async ValueTask InitializeReminderAsync(string url)
         {
             try
@@ -105,7 +146,7 @@ namespace NovelReminder
         {
             EmailService email = new EmailService(new SmtpClientOptions
             {
-                Account = "1743432766@qq.com",
+                Account = Sender,
                 Token = EmailToken,
             });
             string initialStr = IsInitia
