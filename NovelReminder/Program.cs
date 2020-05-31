@@ -10,12 +10,13 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-namespace NovelReminder
+using NovelReminder;
+namespace Try
 {
-    //oy2p2bsacdwfbcilnauasmc5somtdynutpr4p4xzofybj4
+
     class Program
     {
-        private static async System.Threading.Tasks.Task Main(string[] args)
+        static async System.Threading.Tasks.Task Main(string[] args)
         {
             string jsonfile = @"C:\Users\DELL\AppData\Roaming\Microsoft\UserSecrets\ee6f7777-9738-4ddc-b287-7868412d3df1\secrets.json";
             StreamReader file = File.OpenText(jsonfile);

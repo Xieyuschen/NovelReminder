@@ -43,7 +43,7 @@ namespace NovelReminder
                     _connection.Close();
             }
         }
-
+        
         public async ValueTask InsertOrUpdateOneAsync(string url,int lastUpdate)
         {
             try
