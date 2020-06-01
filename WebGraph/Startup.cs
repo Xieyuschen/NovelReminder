@@ -9,7 +9,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
-using WebGraph.Data;
 
 namespace WebGraph
 {
@@ -26,9 +25,6 @@ namespace WebGraph
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
-
-            services.AddDbContext<WebGraphContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("WebGraphContext")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

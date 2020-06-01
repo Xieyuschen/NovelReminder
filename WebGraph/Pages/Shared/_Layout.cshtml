@@ -17,7 +17,7 @@
             <div class="container">
                 @*这一行应该是菜单的悬浮窗*@
                 <!--asp-area是区域，暂时是不需要区域知识的，之后会慢慢的学习
-                    asp-page就像a herf=blabla 一样，指定这个按钮点击知乎会前往的页面-->
+                    asp-page就像a herf=blabla 一样，指定这个按钮点击之后会前往的页面-->
 
                 <a class="navbar-brand" asp-area="" asp-page="/Records/Index">NovelReminder</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -44,8 +44,7 @@
     </header>
     <div class="container">
         <main  role="main" class="pb-3">
-            <h1>Helloworld</h1>
-            @RenderBody();
+            @RenderBody()
         </main>
     </div>
 
