@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NovelReminder", "NovelReminder\NovelReminder.csproj", "{F008BD6D-A643-414F-9D88-94551AC879EF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebGraph", "WebGraph\WebGraph.csproj", "{812945DA-A6B8-421D-9609-27C78D23A08F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebGraph", "WebGraph\WebGraph.csproj", "{812945DA-A6B8-421D-9609-27C78D23A08F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -3,19 +3,29 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - WebGraph</title>
+    <!--这里设置了一个界面的Title，hmmm不过改了之后好像并没有什么用，
+        可能因为是这里是头部的内容，要该页面上的内容要去body里面修改-->
+    <title>@ViewData["Title"] - NovelUpdateReminder</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
+
+
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">WebGraph</a>
+                @*这一行应该是菜单的悬浮窗*@
+                <!--asp-area是区域，暂时是不需要区域知识的，之后会慢慢的学习
+                    asp-page就像a herf=blabla 一样，指定这个按钮点击知乎会前往的页面-->
+
+                <a class="navbar-brand" asp-area="" asp-page="/Records/Index">NovelReminder</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
+                <!--写了悬浮窗菜单栏上的Home和Privacy按钮，指向两个页面-->
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
@@ -25,19 +35,23 @@
                             <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
                         </li>
                     </ul>
+
                 </div>
+                
+            
             </div>
         </nav>
     </header>
     <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
+        <main  role="main" class="pb-3">
+            <h1>Helloworld</h1>
+            @RenderBody();
         </main>
     </div>
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2020 - WebGraph - <a asp-area="" asp-page="/Privacy">Privacy</a>
+            &copy; 2020 - NovelReminder This is in Layout Page - <a asp-area="" asp-page="/Privacy">Privacy</a>
         </div>
     </footer>
 
