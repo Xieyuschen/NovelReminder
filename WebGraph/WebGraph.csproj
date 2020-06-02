@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\NovelReminder\WebGraph.NovelReminder.csproj" />
+    <ProjectReference Include="..\NovelReminder\NovelReminder.csproj" />
   </ItemGroup>
 
 </Project>

@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using WebGraph.Models;
 using System.Text.Json;
-using WebGraph.NovelReminder;
+
 
 namespace WebGraph.Pages
 {

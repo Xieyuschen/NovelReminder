@@ -11,7 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace WebGraph.NovelReminder
+namespace NovelReminder
 {
 
     class Program

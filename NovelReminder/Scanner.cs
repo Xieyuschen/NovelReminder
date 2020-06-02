@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-namespace WebGraph.NovelReminder
+namespace NovelReminder
 {
     public class Scanner
     {
