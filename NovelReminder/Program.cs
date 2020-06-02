@@ -23,7 +23,14 @@ namespace Try
             JsonTextReader reader = new JsonTextReader(file);
             JObject o = (JObject)JToken.ReadFrom(reader);
             var emailToken = o["password"].ToString();
-            Reminder reminder = new Reminder("http://www.biquge.se/12809/", "2016231075@qq.com", "1743432766@qq.com", emailToken);
+            var option = new SmtpClientOptions
+            {
+                Account = "1743432766@qq.com",
+                Token = emailToken
+            };
+            Reminder reminder = new Reminder(new DatabaseService(),new EmailService(option));
+            reminder.AddBooksUrl("http://www.biquge.se/1591/");
+            reminder.AddReceiver("2016231075@qq.com");
             await reminder.StartAsync();
         }
     }

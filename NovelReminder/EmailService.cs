@@ -9,12 +9,13 @@ namespace NovelReminder
 {
     public class MailOptions
     {
-        public string From { get; set; }
+
         public IEnumerable<string> Recievers { get; set; }
         public string Subject { get; set; }
         public string Body { get; set; }
         public Encoding SubjectEncode { get; set; } = Encoding.UTF8;
         public Encoding BodyEncode { get; set; } = Encoding.UTF8;
+        public string SenderName { get; set; }
     }
     public class SmtpClientOptions
     {
@@ -25,21 +26,29 @@ namespace NovelReminder
         public string Token { get; set; }
     }
 
-    public class EmailService
+    public interface IEmailService
+    {
+        //account refers where the email from
+        string account { get; set; }
+        void SendEmail(MailOptions options);
+    }
+    public class EmailService : IEmailService
     {
         private SmtpClient client;
+        public string account { get; set; }
         public EmailService(SmtpClientOptions options)
         {
             client = new SmtpClient();
             client.Host = options.Host;
             client.Port = options.Port;
             client.EnableSsl = options.EnableSsl;
-            client.Credentials = new NetworkCredential(options.Account, options.Token);          
+            client.Credentials = new NetworkCredential(options.Account, options.Token);
+            account = options.Account;
         }
         public void SendEmail(MailOptions options)
         {
             var msg = new MailMessage();
-            foreach(var item in options.Recievers)
+            foreach (var item in options.Recievers)
             {
                 msg.To.Add(item);
             }
@@ -47,9 +56,8 @@ namespace NovelReminder
             msg.Body = options.Body;
             msg.BodyEncoding = options.BodyEncode;
             msg.SubjectEncoding = options.SubjectEncode;
-            msg.From =new MailAddress(options.From,"Schidmt");
+            msg.From = new MailAddress(account,options.SenderName);
             msg.IsBodyHtml = true;
-         
             client.Send(msg);
         }
     }

@@ -10,12 +10,12 @@ using System.Runtime.CompilerServices;
 namespace NovelReminder
 {
 
-    class DatabaseService
+    class DatabaseService : IDataManage
     {
         private SqlConnection _connection;
         public DatabaseService()
         {
-            var connstring= GetConnectionStrings("Database");
+            var connstring = GetConnectionStrings("Database");
             try
             {
                 _connection = new SqlConnection(connstring);
@@ -26,7 +26,7 @@ namespace NovelReminder
                     "(Url varchar(30) Primary Key not null," +
                     "LastChapter int Not null," +
                     "IsInit bit Not null)";
-                using (SqlCommand createtable = new SqlCommand(str,_connection))
+                using (SqlCommand createtable = new SqlCommand(str, _connection))
                 {
                     createtable.ExecuteNonQuery();
                     _connection.Close();
@@ -35,7 +35,7 @@ namespace NovelReminder
             }
             catch (Exception e)
             {
-                Console.WriteLine("Constructor:  "+e.Message);
+                Console.WriteLine("Constructor:  " + e.Message);
             }
             finally
             {
@@ -43,8 +43,7 @@ namespace NovelReminder
                     _connection.Close();
             }
         }
-        
-        public async ValueTask InsertOrUpdateOneAsync(string url,int lastUpdate)
+        public async ValueTask InsertOrUpdateOneAsync(string url, int lastUpdate)
         {
             try
             {
@@ -64,17 +63,17 @@ namespace NovelReminder
                 }
                 _connection.Close();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                Console.WriteLine("InsertOrUpdateOneAsync:  "+e.Message);
+                Console.WriteLine("InsertOrUpdateOneAsync:  " + e.Message);
             }
             finally
             {
-                if(_connection.State==ConnectionState.Open)
-                _connection.Close();
+                if (_connection.State == ConnectionState.Open)
+                    _connection.Close();
             }
         }
-        public async ValueTask UpdateAsync(string url,int lastUpdate)
+        public async ValueTask UpdateAsync(string url, int lastUpdate)
         {
             try
             {
@@ -94,7 +93,7 @@ namespace NovelReminder
             }
             catch (Exception e)
             {
-                Console.WriteLine("UpdateAsync:  "+e.Message);
+                Console.WriteLine("UpdateAsync:  " + e.Message);
             }
             finally
             {
@@ -102,13 +101,13 @@ namespace NovelReminder
                     _connection.Close();
             }
         }
-        public async ValueTask UpdateAsync(string url,bool isinit)
+        public async ValueTask UpdateAsync(string url, bool isinit)
         {
             try
             {
                 var update = "update UpdateRecords set IsInit=@isinit where Url = @url";
-                if(_connection.State == ConnectionState.Closed)
-                _connection.Open();
+                if (_connection.State == ConnectionState.Closed)
+                    _connection.Open();
                 using (SqlCommand insert = new SqlCommand(update, _connection))
                 {
                     insert.Parameters.Add("@url", SqlDbType.VarChar, 255).Value = url;
@@ -157,7 +156,7 @@ namespace NovelReminder
                 await reader.ReadAsync();
                 var result = reader.GetInt32(0);
                 _connection.Close();
-    
+
                 return result;
             }
         }

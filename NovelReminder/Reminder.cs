@@ -15,47 +15,46 @@ using System.Windows;
 
 namespace NovelReminder
 {
+
     class Reminder
     {
-        public IEnumerable<string> Receivers { get; set; }
+        //应该将EmailService独立出来，这样用户可以配置自己喜欢的邮件发送方式
+        //需要将这里的内容进行重构，用户如何配置Email的发送我只需指定接口即可
+        public List<string> Receivers { get; set; }
+        public List<string> BookedUrls { get; set; }
+
         public double Interval { get; set; }
-
-        private IEnumerable<string> BookedUrl;
-        private DatabaseService dbService;
+        private IDataManage DataService;
         private Scanner scanner;
-        private string EmailToken;
-        private string Sender;
+        public IEmailService EmailService { get; set; }
         private Dictionary<int, string> dic;
-        public Reminder(IEnumerable<string> urls,IEnumerable<string> receivers, string sender, string emailToken,double scanInterval=10)
-        {
-            Interval = scanInterval;
-            BookedUrl = urls;
-            dbService = new DatabaseService();
-            scanner = new Scanner();
-            if (sender == null || emailToken == null)
-                throw new Exception("Sender or Token cannot be null!");
-            Sender = sender;
-            EmailToken = emailToken;
-            dic = new Dictionary<int, string>();
-            Receivers = receivers;
-        }
-        public Reminder(string url,string receivers, string sender, string emailToken, double scanInterval = 10)
-        {
-            Interval = scanInterval;
-            BookedUrl = new List<string>{ url };
-            dbService = new DatabaseService();
-            scanner = new Scanner();
-            if (sender == null || emailToken == null)
-                throw new Exception("Sender or Token cannot be null!");
-            Sender = sender;
-            EmailToken = emailToken;
-            dic = new Dictionary<int, string>();
-            Receivers =new List<string> { receivers };
-        }
 
+        //2020.06.02重构
+        //接受者和订阅的url不应该放在构造函数里面去，因为均可能有1+个
+
+        
+        public Reminder(IDataManage dataManage,IEmailService emailService, double interval = 10)
+        {
+            dic = new Dictionary<int, string>();
+            Interval = interval;
+            DataService = new DatabaseService();
+            scanner = new Scanner();
+            EmailService = emailService;
+            DataService = dataManage;
+            Receivers = new List<string>();
+            BookedUrls = new List<string>();
+        }
+        public void AddReceiver(string emailAddress)
+        {
+            Receivers.Add(emailAddress);
+        }
+        public void AddBooksUrl(string url)
+        {
+            BookedUrls.Add(url);
+        }
         public async ValueTask StartAsync()
         {
-            var url = BookedUrl.FirstOrDefault();
+            var url = BookedUrls.FirstOrDefault();
             await InitializeReminderAsync(url);
             int i = 1;
             while (true)
@@ -73,13 +72,12 @@ namespace NovelReminder
                     Console.WriteLine("DetectRecycleErrorMessage:  " + e.Message);
                 }
             }
-        }
-        
+        }        
         public async ValueTask InitializeReminderAsync(string url)
         {
             try
             {
-                if(await dbService.GetIsInit(url))
+                if(await DataService.GetIsInit(url))
                 {
                     Console.WriteLine("The program is running successfully!");
                     //MessageBox.Show();
@@ -90,14 +88,14 @@ namespace NovelReminder
                 await ReadHtmlAndUpdateDicAsync(url);
                 //初始化时将当前信息加入到数据库中去
                 var latestNum = dic.Keys.Max();
-                await dbService.InsertOrUpdateOneAsync(url, latestNum);
+                await DataService.InsertOrUpdateOneAsync(url, latestNum);
 
                 //初始化成功，发送最新的一章表示成功订阅
                 //获得最新一篇文章的内容
                 string articleUrl = url + dic[latestNum];
                 //获取最新一期小说的内容和标题
                 await SendNovelDetailsAsync(articleUrl, true);
-                await dbService.UpdateAsync(url, true);
+                await DataService.UpdateAsync(url, true);
             }
         }
         /// <summary>
@@ -108,7 +106,7 @@ namespace NovelReminder
         public async ValueTask<bool> CheckAnyNewAsync(string url)
         {
             await ReadHtmlAndUpdateDicAsync(url);
-            int numDb =await dbService.GetLastChapterAsync(url);
+            int numDb =await DataService.GetLastChapterAsync(url);
             if (numDb == dic.Keys.Max())
             {
                 return false;
@@ -119,17 +117,24 @@ namespace NovelReminder
                 await SendNovelDetailsAsync(url + dic[i]);
             }
             Console.WriteLine(i-1);
-            await dbService.UpdateAsync(url, dic.Keys.Max());
+            await DataService.UpdateAsync(url, dic.Keys.Max());
             return true;
         }
         private async ValueTask ReadHtmlAndUpdateDicAsync(string url)
         {
-            var ContentInfo = await scanner.GetArticleAsync(url);
-            Regex latestChapter = new Regex("(?<=<a href=\"/\\d*/)(.*?html).*?(?<=第)(\\d*)(?=.*?)");
-            var results= latestChapter.Matches(ContentInfo);
-            foreach(Match item in results)
+            try
             {
-                dic.TryAdd(int.Parse(item.Groups[2].Value), item.Groups[1].Value);
+                var ContentInfo = await scanner.GetArticleAsync(url);
+                Regex latestChapter = new Regex("(?<=<a href=\"/\\d*/)(.*?html).*?(?<=第)(\\d*)(?=.*?)");
+                var results = latestChapter.Matches(ContentInfo);
+                foreach (Match item in results)
+                {
+                    dic.TryAdd(int.Parse(item.Groups[2].Value), item.Groups[1].Value);
+                }
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("Some error In Dic.add:  " + e.Message);
             }
         }
         private async ValueTask SendNovelDetailsAsync(string novalPageUrl,bool IsInitia=false)
@@ -144,21 +149,16 @@ namespace NovelReminder
         }
         private void EmailSendAsync(Match articleContent,Match articleTitle,bool IsInitia=false)
         {
-            EmailService email = new EmailService(new SmtpClientOptions
-            {
-                Account = Sender,
-                Token = EmailToken,
-            });
+            
             string initialStr = IsInitia
                 ? "<h1>When you receive this email,it means you have booked the NovelUpdateReminder successfully!         </h1>"
                 : "";
 
-            email.SendEmail(new MailOptions
+            EmailService.SendEmail(new MailOptions
             {
                 Recievers = Receivers,
                 Body = initialStr + articleContent.Value,
                 Subject =articleTitle.Value,
-                From = Sender
             });
         }
     }
