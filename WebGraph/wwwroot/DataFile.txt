@@ -1,1 +1,1 @@
-2	1	3	False
+{"Url":"1","Name":"2","LastChapter":3,"IsInit":false}

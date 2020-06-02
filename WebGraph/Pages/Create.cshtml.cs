@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using WebGraph.Models;
-
+using System.Text.Json;
 namespace WebGraph.Pages
 {
     public class CreateModel : PageModel
@@ -22,7 +22,7 @@ namespace WebGraph.Pages
         {
             FileStream aFile = new FileStream("wwwroot/DataFile.txt", FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
             StreamWriter writer = new StreamWriter(aFile);
-            var str = Record.ToString();
+            var str = JsonSerializer.Serialize(Record);
             writer.WriteLine(str);
             writer.Close();
             aFile.Close();
