@@ -1,0 +1,43 @@
+﻿@page
+@model WebGraph.Pages.IndexModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+<h1>The Booked Novel-Remind List:</h1>
+<form method="post">
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>NovelName</th>
+                <th>Url</th>
+                <th>LastChapter</th>
+                <th>IsInit</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Records)
+            {
+            <tr>
+                <td>
+                    @Html.DisplayFor(model => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.Url)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.LastChapter)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.IsInit)
+                </td>
+                <td>
+                    <a asp-page="./Edit">Edit</a>
+                </td>
+            </tr>
+            }
+                
+
+            </tbody>
+    </table>
+    
+    <a asp-page="Create">BookNew</a>
+</form>
