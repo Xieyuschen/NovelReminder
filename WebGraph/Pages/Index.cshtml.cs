@@ -29,10 +29,9 @@ namespace WebGraph.Pages
             }
         }
 
-        public async ValueTask OnGet()
+        public void OnGet()
         {
-            Reminder reminder = new Reminder("http://www.biquge.se/12809/", "2016231075@qq.com", "1743432766@qq.com", "1234");
-            await reminder.StartAsync();
+
         }
     }
 }
