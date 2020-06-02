@@ -18,8 +18,8 @@ namespace WebGraph.Pages
         {
             _logger = logger;
             Records = new List<Record>();
-            FileStream aFile = new FileStream("wwwroot/DataFile.txt", FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            StreamReader reader = new StreamReader(aFile);
+            FileStream fStream = new FileStream("wwwroot/DataFile.txt", FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            StreamReader reader = new StreamReader(fStream);
             while (!reader.EndOfStream)
             {
                 var str = reader.ReadLine();

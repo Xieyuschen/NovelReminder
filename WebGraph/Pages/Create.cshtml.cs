@@ -20,12 +20,20 @@ namespace WebGraph.Pages
         }
         public void OnPost()
         {
-            FileStream aFile = new FileStream("wwwroot/DataFile.txt", FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
-            StreamWriter writer = new StreamWriter(aFile);
+            //写入时要先把所有的读出来，再一行行的读进去避免把原有的数据给覆盖掉
+            FileStream fStream = new FileStream("wwwroot/DataFile.txt", FileMode.OpenOrCreate);
+            StreamReader reader = new StreamReader(fStream);
+            string contents = reader.ReadToEnd();
+            reader.Close();
+
+            FileStream fhelp = new FileStream("wwwroot/DataFile.txt", FileMode.OpenOrCreate,FileAccess.Write);
+
+            StreamWriter writer = new StreamWriter(fhelp);
             var str = JsonSerializer.Serialize(Record);
+            writer.Write(contents);
             writer.WriteLine(str);
             writer.Close();
-            aFile.Close();
+            fStream.Close();
         }
     }
 }
