@@ -1,16 +1,39 @@
 ﻿@page
 @model WebGraph.Pages.CreateModel
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-
 <h1>Create</h1>
-<form method="post">
-    Url:
-    <input asp-for="Record.Url" />    <br />
-    Name:
-    <input asp-for="Record.Name" />    <br />
-    LastChapter
-    <input asp-for="Record.LastChapter" />    <br />
+<h4>Add details of the novel you want to book</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Record.Name" class="control-label"></label>
+                <input asp-for="Record.Name" class="form-control" />
+                <span asp-validation-for="Record.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Record.Url" class="control-label"></label>
+                <input asp-for="Record.Url" class="form-control" />
+                <span asp-validation-for="Record.Url" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Record.LastChapter" class="control-label"></label>
+                <input asp-for="Record.LastChapter" class="form-control" />
+                <span asp-validation-for="Record.LastChapter" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
 
-    <input type="submit" />
-</form>
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
 
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

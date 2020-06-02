@@ -10,8 +10,8 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using NovelReminder;
-namespace Try
+
+namespace WebGraph.NovelReminder
 {
 
     class Program

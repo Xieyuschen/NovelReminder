@@ -1,2 +1,4 @@
 {"Url":"Test","Name":"ThisIsTestArticle","LastChapter":1234,"IsInit":false}
 {"Url":"http://www.biquge.se/12809/","Name":"\u95EE\u9053\u7EA2\u5C18","LastChapter":1480,"IsInit":false}
+{"Url":"1","Name":"1","LastChapter":1,"IsInit":false}
+{"Url":"1","Name":"ThisIsTestArticle","LastChapter":14,"IsInit":false}

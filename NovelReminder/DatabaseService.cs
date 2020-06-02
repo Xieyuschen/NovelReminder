@@ -7,10 +7,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Configuration;
 using System.Runtime.CompilerServices;
-namespace NovelReminder
+namespace WebGraph.NovelReminder
 {
 
-    class DatabaseService
+    public class DatabaseService
     {
         private SqlConnection _connection;
         public DatabaseService()

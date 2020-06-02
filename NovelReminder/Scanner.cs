@@ -4,9 +4,9 @@ using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-namespace NovelReminder
+namespace WebGraph.NovelReminder
 {
-    class Scanner
+    public class Scanner
     {
         //private List<string> NovalUrls;
         public async ValueTask<string> GetArticleAsync(string url)

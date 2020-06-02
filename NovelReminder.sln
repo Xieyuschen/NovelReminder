@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NovelReminder", "NovelReminder\NovelReminder.csproj", "{F008BD6D-A643-414F-9D88-94551AC879EF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebGraph.NovelReminder", "NovelReminder\WebGraph.NovelReminder.csproj", "{F008BD6D-A643-414F-9D88-94551AC879EF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebGraph", "WebGraph\WebGraph.csproj", "{812945DA-A6B8-421D-9609-27C78D23A08F}"
 EndProject

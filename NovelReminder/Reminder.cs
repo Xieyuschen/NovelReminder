@@ -13,9 +13,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace NovelReminder
+namespace WebGraph.NovelReminder
 {
-    class Reminder
+    public class Reminder
     {
         public IEnumerable<string> Receivers { get; set; }
         public double Interval { get; set; }
