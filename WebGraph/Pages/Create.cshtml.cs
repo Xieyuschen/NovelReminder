@@ -24,6 +24,8 @@ namespace WebGraph.Pages
             StreamWriter writer = new StreamWriter(aFile);
             var str = Record.ToString();
             writer.WriteLine(str);
+            writer.Close();
+            aFile.Close();
         }
     }
 }
