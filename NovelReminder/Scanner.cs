@@ -6,12 +6,12 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 namespace NovelReminder
 {
-    class Scanner
+    class Scanner : IScanner
     {
-        //private List<string> NovalUrls;
+
         public async ValueTask<string> GetArticleAsync(string url)
         {
-            using(var client=new HttpClient())
+            using (var client = new HttpClient())
             {
                 HttpResponseMessage response = await client.GetAsync(url);
                 if (response.IsSuccessStatusCode)
@@ -23,9 +23,9 @@ namespace NovelReminder
                     throw new Exception("The Request failed!");
                 }
             }
-              
-            
+
+
         }
-        
+
     }
 }

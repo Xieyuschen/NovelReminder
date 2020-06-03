@@ -25,7 +25,7 @@ namespace NovelReminder
 
         public double Interval { get; set; }
         private IDataManage DataService;
-        private Scanner scanner;
+        private IScanner Scanner;
         public IEmailService EmailService { get; set; }
         private Dictionary<int, string> dic;
 
@@ -33,12 +33,12 @@ namespace NovelReminder
         //接受者和订阅的url不应该放在构造函数里面去，因为均可能有1+个
 
         
-        public Reminder(IDataManage dataManage,IEmailService emailService, double interval = 10)
+        public Reminder(IDataManage dataManage,IEmailService emailService,IScanner scanner,double interval = 10)
         {
             dic = new Dictionary<int, string>();
             Interval = interval;
             DataService = new DatabaseService();
-            scanner = new Scanner();
+            Scanner = scanner;
             EmailService = emailService;
             DataService = dataManage;
             Receivers = new List<string>();
@@ -122,24 +122,29 @@ namespace NovelReminder
         }
         private async ValueTask ReadHtmlAndUpdateDicAsync(string url)
         {
-            try
+
+            var ContentInfo = await Scanner.GetArticleAsync(url);
+            Regex latestChapter = new Regex("(?<=<a href=\"/\\d*/)(.*?html).*?(?<=第)(\\d*)(?=.*?)");
+            var results = latestChapter.Matches(ContentInfo);
+            foreach (Match item in results)
             {
-                var ContentInfo = await scanner.GetArticleAsync(url);
-                Regex latestChapter = new Regex("(?<=<a href=\"/\\d*/)(.*?html).*?(?<=第)(\\d*)(?=.*?)");
-                var results = latestChapter.Matches(ContentInfo);
-                foreach (Match item in results)
+                try
                 {
                     dic.TryAdd(int.Parse(item.Groups[2].Value), item.Groups[1].Value);
+
                 }
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine("Some error In Dic.add:  " + e.Message);
+                catch (Exception e)
+                {
+                    Console.WriteLine("Some error In Dic.add:  " + e.Message);
+                }
+
             }
         }
+
+        
         private async ValueTask SendNovelDetailsAsync(string novalPageUrl,bool IsInitia=false)
         {
-            var content = await scanner.GetArticleAsync(novalPageUrl);
+            var content = await Scanner.GetArticleAsync(novalPageUrl);
             Regex rcontent = new Regex("(?<=<div\\sid=\"content\">)[\\S\\s]*?(?=</div>)");
             Regex rtitle = new Regex("(?<=<title>).*?(?=_)");
             var articleContent = rcontent.Match(content);
