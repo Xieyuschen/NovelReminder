@@ -28,8 +28,9 @@ namespace NovelReminder
                 Account = "1743432766@qq.com",
                 Token = emailToken
             };
-            Reminder reminder = new Reminder(new DatabaseService(),new EmailService(option));
-            reminder.AddBooksUrl("http://www.biquge.se/1591/");
+            var em = new EmailService(option);
+            Reminder reminder = new Reminder(new DatabaseService(),em,new Scanner());
+            reminder.AddBooksUrl("http://www.biquge.se/12809/");
             reminder.AddReceiver("2016231075@qq.com");
             await reminder.StartAsync();
         }
