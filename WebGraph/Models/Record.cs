@@ -10,6 +10,8 @@ namespace WebGraph.Models
     [Serializable]
     public class Record
     {
+        //ID是为了生成一个CRUD，看一下如何组织数据库而写的东西
+        public string ID { get; set; }
         public string Url { get; set; }
         public string Name { get; set; }
         public int LastChapter { get; set; }

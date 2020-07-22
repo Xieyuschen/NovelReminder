@@ -18,6 +18,7 @@ namespace NovelReminder
     {
         static async System.Threading.Tasks.Task Main(string[] args)
         {
+
             string jsonfile = @"C:\Users\DELL\AppData\Roaming\Microsoft\UserSecrets\ee6f7777-9738-4ddc-b287-7868412d3df1\secrets.json";
             StreamReader file = File.OpenText(jsonfile);
             JsonTextReader reader = new JsonTextReader(file);
@@ -29,7 +30,7 @@ namespace NovelReminder
                 Token = emailToken
             };
             var em = new EmailService(option);
-            Reminder reminder = new Reminder(new DatabaseService(),em,new Scanner());
+            Reminder reminder = new Reminder(new DatabaseService(), em, new Scanner());
             reminder.AddBooksUrl("http://www.biquge.se/12809/");
             reminder.AddReceiver("2016231075@qq.com");
             await reminder.StartAsync();
