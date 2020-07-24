@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -11,8 +12,10 @@ namespace NovelReminder
 
         public async ValueTask<string> GetArticleAsync(string url)
         {
+            
             using (var client = new HttpClient())
             {
+                
                 HttpResponseMessage response = await client.GetAsync(url);
                 if (response.IsSuccessStatusCode)
                 {

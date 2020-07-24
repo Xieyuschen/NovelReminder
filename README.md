@@ -45,3 +45,11 @@ static async System.Threading.Tasks.Task Main(string[] args)
 
 ## 注：
 暂时不支持多小说查询，该功能会很快被添加，敬请期待。小说网站暂时只支持[笔趣阁](http://www.biquge.se/).
+
+
+
+
+# 简单写一些这两天关于`Http`基本知识的了解吧：
+&emsp;&emsp;[写的很棒的一篇简介](https://www.cnblogs.com/andy-zhou/p/5360107.html).介绍了Cookie与Session的一些知识，我把做的笔记放在这里算了，就不再打字了。  
+![](Images/1.jpg)
+![](Images/2.jpg)
