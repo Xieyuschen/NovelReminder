@@ -2,7 +2,7 @@
 
 namespace NovelReminder
 {
-    interface IDataManage
+    interface IDataManager
     {
         ValueTask<bool> GetIsInit(string url);
         ValueTask<int> GetLastChapterAsync(string url);

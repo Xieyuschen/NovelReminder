@@ -24,7 +24,7 @@ namespace NovelReminder
         public List<string> BookedUrls { get; set; }
 
         public double Interval { get; set; }
-        private IDataManage DataService;
+        private IDataManager DataService;
         private IScanner Scanner;
         public IEmailService EmailService { get; set; }
         private Dictionary<int, string> dic;
@@ -33,7 +33,7 @@ namespace NovelReminder
         //接受者和订阅的url不应该放在构造函数里面去，因为均可能有1+个
 
         
-        public Reminder(IDataManage dataManage,IEmailService emailService,IScanner scanner,double interval = 10)
+        public Reminder(IDataManager dataManage,IEmailService emailService,IScanner scanner,double interval = 10)
         {
             dic = new Dictionary<int, string>();
             Interval = interval;
