@@ -35,7 +35,7 @@ namespace Try
             //await reminder.StartAsync();
 
             Scanner scanner = new Scanner();
-            var content=await scanner.GetArticleAsync("http://www.biquge.se/23609");
+            var content=await scanner.GetHtmlContentAsync("http://www.biquge.se/23609");
 
             content.Trim();
         }

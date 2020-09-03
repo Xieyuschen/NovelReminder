@@ -121,7 +121,7 @@ namespace NovelReminder
         private async ValueTask ReadHtmlAndUpdateDicAsync(string url)
         {
 
-            var ContentInfo = await Scanner.GetArticleAsync(url);
+            var ContentInfo = await Scanner.GetHtmlContentAsync(url);
             Regex latestChapter = new Regex("(?<=<a href=\"/\\d*/)(.*?html).*?(?<=第)(\\d*)(?=.*?)");
             var results = latestChapter.Matches(ContentInfo);
             foreach (Match item in results)
@@ -142,7 +142,7 @@ namespace NovelReminder
         
         private async ValueTask SendNovelDetailsAsync(string novalPageUrl,bool IsInitia=false)
         {
-            var content = await Scanner.GetArticleAsync(novalPageUrl);
+            var content = await Scanner.GetHtmlContentAsync(novalPageUrl);
             Regex rcontent = new Regex("(?<=<div\\sid=\"content\">)[\\S\\s]*?(?=</div>)");
             Regex rtitle = new Regex("(?<=<title>).*?(?=_)");
             var articleContent = rcontent.Match(content);

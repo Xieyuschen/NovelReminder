@@ -11,7 +11,7 @@ namespace NovelReminder
     class Scanner : IScanner
     {
 
-        public async ValueTask<string> GetArticleAsync(string url)
+        public async ValueTask<string> GetHtmlContentAsync(string url)
         {
             using (var client = new HttpClient())
             {
@@ -25,9 +25,19 @@ namespace NovelReminder
                     throw new Exception("The Request failed!");
                 }
             }
-
-
         }
+
+
+        /// <summary>
+        /// 对获得的html文件进行处理，获取对应的文件内容。
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        public async ValueTask<IEnumerable<string>> GetCatalogAsync(string url)
+        {
+            throw new NotImplementedException();
+        }
+
 
     }
 }
