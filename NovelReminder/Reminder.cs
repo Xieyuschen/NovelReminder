@@ -37,7 +37,6 @@ namespace NovelReminder
         {
             dic = new Dictionary<int, string>();
             Interval = interval;
-            DataService = new DatabaseService();
             Scanner = scanner;
             EmailService = emailService;
             DataService = dataManage;

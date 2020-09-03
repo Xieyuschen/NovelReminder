@@ -22,12 +22,20 @@ namespace NovelReminder
         public static NovelInfo Deserialization(string str)
         {
             var info = str.Split(split);
-            NovelInfo novelinfo = new NovelInfo{
-                Url = info[0],
-                LastUpdate = int.Parse(info[1]),
-                IsInit = bool.Parse(info[2])
-            };
-            return novelinfo;
+            try
+            {
+                NovelInfo novelinfo = new NovelInfo
+                {
+                    Url = info[0],
+                    LastUpdate = int.Parse(info[1]),
+                    IsInit = bool.Parse(info[2])
+                };
+                return novelinfo;
+            }
+            catch 
+            {
+                throw new Exception("Incorrect piece of info!");
+            }
         }
     }
     
@@ -37,10 +45,17 @@ namespace NovelReminder
     class DbFileServices : IDataManager
     {
         private List<NovelInfo> Information {get;set;}
-        
+        private string filename = @"E:\Code\NovelReminder\NovelReminder\NovelInfomation.txt";
         private void RewriteTxtFile()
         {
             //rewrite txt file when some records are updated
+            using(StreamWriter file=new StreamWriter(filename,false))
+            {
+                foreach(var item in Information)
+                {
+                    file.WriteLine(item.Serialization());
+                }
+            }
         }
         public DbFileServices()
         {
@@ -50,7 +65,7 @@ namespace NovelReminder
 
             //how to Serilize NovelInfo and Deserilize it?
             //Implement it by myself first:)
-            string filename = @"E:\Code\NovelReminder\NovelReminder\NovelInfomation.txt";
+            Information = new List<NovelInfo>();
             IEnumerable<string> lines = File.ReadLines(filename);
             foreach(var item in lines)
             {
@@ -61,9 +76,15 @@ namespace NovelReminder
         //Lack of async will occurs that cannot convert bool to System.Threading.Task
         public async ValueTask<bool> GetIsInit(string url)
         {
-            var IsInit = Information.Find(t => t.Url == url).IsInit;
-            
-            return IsInit;
+
+                var ele = Information.Find(t => t.Url == url);
+                if (ele == null)
+                {
+                    throw new Exception("Cannot find this Url infotmation");
+
+                }
+                else return ele.IsInit;
+
         }
 
         public async ValueTask<int> GetLastChapterAsync(string url)
@@ -94,6 +115,7 @@ namespace NovelReminder
                     LastUpdate=lastUpdate
                     ,IsInit=false});
             }
+            RewriteTxtFile();
         }
 
         public async ValueTask UpdateAsync(string url, bool isinit)
@@ -105,6 +127,7 @@ namespace NovelReminder
                     item.IsInit=isinit;
                 }
             }
+            RewriteTxtFile();
         }
 
         public async ValueTask UpdateAsync(string url, int lastUpdate)
@@ -116,6 +139,7 @@ namespace NovelReminder
                     item.LastUpdate=lastUpdate;
                 }
             }
+            RewriteTxtFile();
         }
     }
 }
