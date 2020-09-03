@@ -6,6 +6,8 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 namespace NovelReminder
 {
+    //Scanner 应该完成对页面的一些解析与处理，而不是只获得一个内容就完事了                      
+
     class Scanner : IScanner
     {
 

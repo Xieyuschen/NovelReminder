@@ -22,7 +22,6 @@ namespace NovelReminder
         //需要将这里的内容进行重构，用户如何配置Email的发送我只需指定接口即可
         public List<string> Receivers { get; set; }
         public List<string> BookedUrls { get; set; }
-
         public double Interval { get; set; }
         private IDataManager DataService;
         private IScanner Scanner;

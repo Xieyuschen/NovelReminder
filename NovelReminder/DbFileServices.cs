@@ -17,7 +17,7 @@ namespace NovelReminder
         private static string split =  ";";
         public string Serialization()
         {
-            return Url + split + LastUpdate.ToString() + IsInit.ToString();
+            return Url + split + LastUpdate.ToString() +split+ IsInit.ToString();
         }
         public static NovelInfo Deserialization(string str)
         {
@@ -69,7 +69,12 @@ namespace NovelReminder
             IEnumerable<string> lines = File.ReadLines(filename);
             foreach(var item in lines)
             {
-                Information.Add(NovelInfo.Deserialization(item));
+                try
+                {
+                    Information.Add(NovelInfo.Deserialization(item));
+
+                }
+                catch { }
             }
         }
 
