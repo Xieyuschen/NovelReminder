@@ -62,7 +62,7 @@ namespace NovelReminder
             }
             catch (Exception e)
             {
-                await GetCatalogHtmlAndUpdateDicAsync(url);
+                await UpdateDicByCatalogHtmlAsync(url);
                 //初始化时将当前信息加入到数据库中去
                 var latestNum = dic.Keys.Max();
                 await DataService.InsertOrUpdateOneAsync(url, latestNum);
@@ -112,8 +112,10 @@ namespace NovelReminder
         /// <returns></returns>
         public async ValueTask<bool> CheckAnyNewAsync(string url)
         {
-            await GetCatalogHtmlAndUpdateDicAsync(url);
+            await UpdateDicByCatalogHtmlAsync(url);
             int numDb =await DataService.GetLastChapterAsync(url);
+
+            //Dic中存储最新信息，numDb存储上次发送过邮件的信息。
             if (numDb == dic.Keys.Max())
             {
                 return false;
@@ -129,7 +131,7 @@ namespace NovelReminder
         }
 
         //9.4重构ReadHtmlAndUpdateDicAsync方法，部分工作由Scanner的解析框架完成
-        private async ValueTask GetCatalogHtmlAndUpdateDicAsync(string url)
+        private async ValueTask UpdateDicByCatalogHtmlAsync(string url)
         {
 
             var ContentInfos = await Scanner.GetCatalogAsync(url);
