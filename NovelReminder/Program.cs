@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using NovelReminder;
+using HtmlAgilityPack;
 namespace Try
 {
 
@@ -35,9 +36,18 @@ namespace Try
             //await reminder.StartAsync();
 
             Scanner scanner = new Scanner();
-            var content=await scanner.GetHtmlContentAsync("http://www.biquge.se/23609");
+            var content=await scanner.GetHtmlContentAsync("http://www.biquge.se/23609/");
+            HtmlDocument htmlDocument = new HtmlDocument();
+            htmlDocument.LoadHtml(content);
 
-            content.Trim();
+            var result = htmlDocument.GetElementbyId("list");
+            
+            htmlDocument.LoadHtml(result.OuterHtml);
+            var lists = htmlDocument.DocumentNode.SelectNodes("//a");
+            foreach(var item in lists)
+            {
+                Console.WriteLine(item.OuterHtml);
+            }
         }
     }
 }
