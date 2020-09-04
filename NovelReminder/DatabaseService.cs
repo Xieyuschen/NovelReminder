@@ -10,7 +10,7 @@ using System.Runtime.CompilerServices;
 namespace NovelReminder
 {
 
-    class DatabaseService : IDataManage
+    class DatabaseService : IDataManager
     {
         private SqlConnection _connection;
         public DatabaseService()

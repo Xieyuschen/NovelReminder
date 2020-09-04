@@ -2,8 +2,9 @@
 
 namespace NovelReminder
 {
-    interface IDataManage
+    interface IDataManager
     {
+        //when you need to implement this interface, don't forget to add a async :)
         ValueTask<bool> GetIsInit(string url);
         ValueTask<int> GetLastChapterAsync(string url);
         ValueTask InsertOrUpdateOneAsync(string url, int lastUpdate);

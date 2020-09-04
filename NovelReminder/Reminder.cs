@@ -15,6 +15,14 @@ using System.Windows;
 
 namespace NovelReminder
 {
+    //==============================================================
+    //Reminder 要做以下几件事：
+    //
+    //1. 处理小说的目录列表
+    //2. 检索小说是否更新
+    //3. 当检查到小说更新的时候，给用户发送邮件
+    //
+    //===============================================================
 
     class Reminder
     {
@@ -22,9 +30,8 @@ namespace NovelReminder
         //需要将这里的内容进行重构，用户如何配置Email的发送我只需指定接口即可
         public List<string> Receivers { get; set; }
         public List<string> BookedUrls { get; set; }
-
         public double Interval { get; set; }
-        private IDataManage DataService;
+        private IDataManager DataService;
         private IScanner Scanner;
         public IEmailService EmailService { get; set; }
         private Dictionary<int, string> dic;
@@ -33,17 +40,42 @@ namespace NovelReminder
         //接受者和订阅的url不应该放在构造函数里面去，因为均可能有1+个
 
         
-        public Reminder(IDataManage dataManage,IEmailService emailService,IScanner scanner,double interval = 10)
+        public Reminder(IDataManager dataManage,IEmailService emailService,IScanner scanner,double interval = 10)
         {
             dic = new Dictionary<int, string>();
             Interval = interval;
-            DataService = new DatabaseService();
             Scanner = scanner;
             EmailService = emailService;
             DataService = dataManage;
             Receivers = new List<string>();
             BookedUrls = new List<string>();
         }
+        public async ValueTask InitializeReminderAsync(string url)
+        {
+            try
+            {
+                if (await DataService.GetIsInit(url))
+                {
+                    Console.WriteLine("The program is running successfully!");
+                    //MessageBox.Show();
+                }
+            }
+            catch (Exception e)
+            {
+                await UpdateDicByCatalogHtmlAsync(url);
+                //初始化时将当前信息加入到数据库中去
+                var latestNum = dic.Keys.Max();
+                await DataService.InsertOrUpdateOneAsync(url, latestNum);
+
+                //初始化成功，发送最新的一章表示成功订阅
+                //获得最新一篇文章的内容
+                string articleUrl = url + dic[latestNum];
+                //获取最新一期小说的内容和标题
+                await SendNovelDetailsAsync(articleUrl, true);
+                await DataService.UpdateAsync(url, true);
+            }
+        }
+
         public void AddReceiver(string emailAddress)
         {
             Receivers.Add(emailAddress);
@@ -73,31 +105,6 @@ namespace NovelReminder
                 }
             }
         }        
-        public async ValueTask InitializeReminderAsync(string url)
-        {
-            try
-            {
-                if(await DataService.GetIsInit(url))
-                {
-                    Console.WriteLine("The program is running successfully!");
-                    //MessageBox.Show();
-                }
-            }
-            catch(Exception e)
-            {
-                await ReadHtmlAndUpdateDicAsync(url);
-                //初始化时将当前信息加入到数据库中去
-                var latestNum = dic.Keys.Max();
-                await DataService.InsertOrUpdateOneAsync(url, latestNum);
-
-                //初始化成功，发送最新的一章表示成功订阅
-                //获得最新一篇文章的内容
-                string articleUrl = url + dic[latestNum];
-                //获取最新一期小说的内容和标题
-                await SendNovelDetailsAsync(articleUrl, true);
-                await DataService.UpdateAsync(url, true);
-            }
-        }
         /// <summary>
         /// return false if there are nothing new
         /// </summary>
@@ -105,8 +112,10 @@ namespace NovelReminder
         /// <returns></returns>
         public async ValueTask<bool> CheckAnyNewAsync(string url)
         {
-            await ReadHtmlAndUpdateDicAsync(url);
+            await UpdateDicByCatalogHtmlAsync(url);
             int numDb =await DataService.GetLastChapterAsync(url);
+
+            //Dic中存储最新信息，numDb存储上次发送过邮件的信息。
             if (numDb == dic.Keys.Max())
             {
                 return false;
@@ -120,18 +129,22 @@ namespace NovelReminder
             await DataService.UpdateAsync(url, dic.Keys.Max());
             return true;
         }
-        private async ValueTask ReadHtmlAndUpdateDicAsync(string url)
+
+        //9.4重构ReadHtmlAndUpdateDicAsync方法，部分工作由Scanner的解析框架完成
+        private async ValueTask UpdateDicByCatalogHtmlAsync(string url)
         {
 
-            var ContentInfo = await Scanner.GetArticleAsync(url);
-            Regex latestChapter = new Regex("(?<=<a href=\"/\\d*/)(.*?html).*?(?<=第)(\\d*)(?=.*?)");
-            var results = latestChapter.Matches(ContentInfo);
+            var ContentInfos = await Scanner.GetCatalogAsync(url);
+            Regex latestChapter = new Regex("(?<=<a href=\"/\\d*/)(.*?html).*?(?<=>)(\\d*)(?=、.*?)");
+
+            
+            //<a href="/23609/72550175.html">735、青春、理想和现实</a>
+            var results = latestChapter.Matches(ContentInfos.First());
             foreach (Match item in results)
             {
                 try
                 {
                     dic.TryAdd(int.Parse(item.Groups[2].Value), item.Groups[1].Value);
-
                 }
                 catch (Exception e)
                 {
@@ -144,7 +157,7 @@ namespace NovelReminder
         
         private async ValueTask SendNovelDetailsAsync(string novalPageUrl,bool IsInitia=false)
         {
-            var content = await Scanner.GetArticleAsync(novalPageUrl);
+            var content = await Scanner.GetHtmlContentAsync(novalPageUrl);
             Regex rcontent = new Regex("(?<=<div\\sid=\"content\">)[\\S\\s]*?(?=</div>)");
             Regex rtitle = new Regex("(?<=<title>).*?(?=_)");
             var articleContent = rcontent.Match(content);
