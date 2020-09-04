@@ -36,17 +36,15 @@ namespace Try
             //await reminder.StartAsync();
 
             Scanner scanner = new Scanner();
-            var content=await scanner.GetHtmlContentAsync("http://www.biquge.se/23609/");
-            HtmlDocument htmlDocument = new HtmlDocument();
-            htmlDocument.LoadHtml(content);
+            var ContentInfos = await scanner.GetCatalogAsync("http://www.biquge.se/23609/");
+            Regex latestChapter = new Regex("(?<=<a href=\"/\\d*/)(.*?html).*?(?<=>)(\\d*)(?=、.*?)");
 
-            var result = htmlDocument.GetElementbyId("list");
-            
-            htmlDocument.LoadHtml(result.OuterHtml);
-            var lists = htmlDocument.DocumentNode.SelectNodes("//a");
-            foreach(var item in lists)
+
+            //<a href="/23609/72550175.html">735、青春、理想和现实</a>
+            var results = latestChapter.Matches(ContentInfos.First());
+            foreach (Match item in results)
             {
-                Console.WriteLine(item.OuterHtml);
+
             }
         }
     }
