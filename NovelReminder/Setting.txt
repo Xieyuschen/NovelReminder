@@ -1,0 +1,2 @@
+If you see this line on remote page,it shows that you failed to edit .gitignnore file correctly!  
+:(

@@ -3,6 +3,11 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+#==============Added At 2020.9.4=================
+# Setting for App:
+Settings.txt
+#==========================================
+
 # User-specific files
 *.rsuser
 *.suo

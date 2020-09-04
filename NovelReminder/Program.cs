@@ -24,6 +24,7 @@ namespace Try
             JsonTextReader reader = new JsonTextReader(file);
             JObject o = (JObject)JToken.ReadFrom(reader);
             var emailToken = o["password"].ToString();
+
             var option = new SmtpClientOptions
             {
                 Account = "1743432766@qq.com",
