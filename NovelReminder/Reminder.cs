@@ -6,6 +6,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Mail;
 using System.Security.Policy;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -98,15 +99,17 @@ namespace NovelReminder
             {
                 try
                 {
+                    //如果监测到目前有不是最新的小说，会在CheckAnyNewAsync中进行发送邮件更新数据库的操作
+                    //有一些对不住
                     if (!(await CheckAnyNewAsync(url)))
                     {
                         Console.WriteLine($"Scan {i++} times");
                         await Task.Delay(TimeSpan.FromSeconds(Interval));
                     }
                 }
-                catch (Exception e)
+                catch (SmtpException e)
                 {
-                    Console.WriteLine("DetectRecycleErrorMessage:  " + e.Message);
+                    Console.WriteLine("DetectRecycleErrorMessage:  " + e.Message+e.StatusCode);
                 }
             }
         }        
@@ -159,7 +162,10 @@ namespace NovelReminder
             }
         }
 
-        
+        public async ValueTask SenderForTesting()
+        {
+            await SendNovelDetailsAsync("http://www.biquge.se/23609/75704410.html");
+        }
         private async ValueTask SendNovelDetailsAsync(string novalPageUrl,bool IsInitia=false)
         {
             var content = await Scanner.GetHtmlContentAsync(novalPageUrl);

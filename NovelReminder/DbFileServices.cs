@@ -89,7 +89,6 @@ namespace NovelReminder
 
                 }
                 else return ele.IsInit;
-
         }
 
         public async ValueTask<int> GetLastChapterAsync(string url)

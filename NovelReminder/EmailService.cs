@@ -39,12 +39,17 @@ namespace NovelReminder
         public EmailService(SmtpClientOptions options)
         {
             client = new SmtpClient();
+            client.EnableSsl = true;// options.EnableSsl;
+
+            client.UseDefaultCredentials = false;
+            client.DeliveryMethod = SmtpDeliveryMethod.Network;
+            account = options.Account;
             client.Host = options.Host;
             client.Port = options.Port;
-            client.UseDefaultCredentials = false;
-            client.EnableSsl = options.EnableSsl;
-            client.Credentials = new NetworkCredential(options.Account, options.Token);
-            account = options.Account;
+
+            //client.Credentials = new NetworkCredential(options.Account, options.Token);
+            client.Credentials = new NetworkCredential("1743432766@qq.com", options.Token);
+
         }
         public void SendEmail(MailOptions options)
         {
@@ -59,7 +64,15 @@ namespace NovelReminder
             msg.SubjectEncoding = options.SubjectEncode;
             msg.From = new MailAddress(account,options.SenderName);
             msg.IsBodyHtml = true;
-            client.Send(msg);
+            try
+            {
+                client.Send(msg);
+
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("Failed to send email beacuse " + e.Message);
+            }
         }
     }
 }
