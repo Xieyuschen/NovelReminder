@@ -59,6 +59,11 @@ namespace NovelReminder
                     Console.WriteLine("The program is running successfully!");
                     //MessageBox.Show();
                 }
+                else
+                {
+                    await DataService.UpdateAsync(url, true);
+                    Console.WriteLine("Initialize the new novel and the reminder is running successfully!");
+                }
             }
             catch (Exception e)
             {
@@ -163,15 +168,12 @@ namespace NovelReminder
             var articleContent = rcontent.Match(content);
             var articleTitle = rtitle.Match(content);
             EmailSendAsync(articleContent, articleTitle, IsInitia);
-
         }
         private void EmailSendAsync(Match articleContent,Match articleTitle,bool IsInitia=false)
-        {
-            
+        {           
             string initialStr = IsInitia
                 ? "<h1>When you receive this email,it means you have booked the NovelUpdateReminder successfully!         </h1>"
                 : "";
-
             EmailService.SendEmail(new MailOptions
             {
                 Recievers = Receivers,

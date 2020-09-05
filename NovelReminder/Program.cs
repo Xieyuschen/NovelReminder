@@ -20,7 +20,7 @@ namespace Try
         static async System.Threading.Tasks.Task Main(string[] args)
         {
             
-            string emailToken=File.ReadAllText("../../../Settings.txt");
+            string emailToken=File.ReadAllText("Settings.txt");
             var option = new SmtpClientOptions
             {
                 Account = "1743432766@qq.com",

@@ -41,6 +41,7 @@ namespace NovelReminder
             client = new SmtpClient();
             client.Host = options.Host;
             client.Port = options.Port;
+            client.UseDefaultCredentials = false;
             client.EnableSsl = options.EnableSsl;
             client.Credentials = new NetworkCredential(options.Account, options.Token);
             account = options.Account;

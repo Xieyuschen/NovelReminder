@@ -17,4 +17,10 @@
     <PackageReference Include="System.Windows.Extensions" Version="4.7.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Settings.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
