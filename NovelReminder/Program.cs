@@ -23,7 +23,7 @@ namespace Try
             string emailToken=File.ReadAllText("Settings.txt");
             var option = new SmtpClientOptions
             {
-                Account = "1743432766@qq.com",
+                Account = "xieyuschen@163.com",
                 Token = emailToken
             };
             var em = new EmailService(option);

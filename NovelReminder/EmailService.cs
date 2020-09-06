@@ -19,7 +19,7 @@ namespace NovelReminder
     }
     public class SmtpClientOptions
     {
-        public string Host { get; set; } = "smtp.qq.com";
+        public string Host { get; set; } = "smtp.163.com";
         public int Port { get; set; } = 587;
         public bool EnableSsl { get; set; } = true;
         public string Account { get; set; }
@@ -48,7 +48,7 @@ namespace NovelReminder
             client.Port = options.Port;
 
             //client.Credentials = new NetworkCredential(options.Account, options.Token);
-            client.Credentials = new NetworkCredential("1743432766@qq.com", options.Token);
+            client.Credentials = new NetworkCredential("xieyuschen@163.com", options.Token);
 
         }
         public void SendEmail(MailOptions options)
