@@ -109,7 +109,7 @@ namespace NovelReminder
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("DetectRecycleErrorMessage:  " + e.Message+e.StatusCode);
+                    Console.WriteLine("DetectRecycleErrorMessage:  " + e.Message);
                 }
             }
         }        

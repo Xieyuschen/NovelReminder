@@ -22,7 +22,7 @@ namespace NovelReminder
             
             using (var client = new HttpClient())
             {
-                
+
                 HttpResponseMessage response = await client.GetAsync(url);
                 if (response.IsSuccessStatusCode)
                 {
