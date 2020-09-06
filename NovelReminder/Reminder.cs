@@ -51,6 +51,41 @@ namespace NovelReminder
             Receivers = new List<string>();
             BookedUrls = new List<string>();
         }
+        public async ValueTask StartAsync()
+        {
+            var url = BookedUrls.FirstOrDefault();
+            await InitializeReminderAsync(url);
+            int i = 1;
+            while (true)
+            {
+                try
+                {
+                    //如果监测到目前有不是最新的小说，会在CheckAnyNewAsync中进行发送邮件更新数据库的操作
+
+                    //CheckAnyNewAsync
+                    if (!(await CheckAnyNewAsync(url)))
+                    {
+                        Console.WriteLine($"Scan {i++} times");
+                        await Task.Delay(TimeSpan.FromSeconds(Interval));
+                    }
+
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("DetectRecycleErrorMessage:  " + e.Message);
+                }
+            }
+        }
+
+        public void AddReceiver(string emailAddress)
+        {
+            Receivers.Add(emailAddress);
+        }
+        public void AddBooksUrl(string url)
+        {
+            BookedUrls.Add(url);
+        }
+
         public async ValueTask InitializeReminderAsync(string url)
         {
             try
@@ -82,37 +117,6 @@ namespace NovelReminder
             }
         }
 
-        public void AddReceiver(string emailAddress)
-        {
-            Receivers.Add(emailAddress);
-        }
-        public void AddBooksUrl(string url)
-        {
-            BookedUrls.Add(url);
-        }
-        public async ValueTask StartAsync()
-        {
-            var url = BookedUrls.FirstOrDefault();
-            await InitializeReminderAsync(url);
-            int i = 1;
-            while (true)
-            {
-                try
-                {
-                    //如果监测到目前有不是最新的小说，会在CheckAnyNewAsync中进行发送邮件更新数据库的操作
-                    //有一些对不住
-                    if (!(await CheckAnyNewAsync(url)))
-                    {
-                        Console.WriteLine($"Scan {i++} times");
-                        await Task.Delay(TimeSpan.FromSeconds(Interval));
-                    }
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("DetectRecycleErrorMessage:  " + e.Message);
-                }
-            }
-        }        
         /// <summary>
         /// return false if there are nothing new
         /// </summary>
@@ -145,19 +149,25 @@ namespace NovelReminder
             var ContentInfos = await Scanner.GetCatalogAsync(url);
             Regex latestChapter = new Regex("(?<=<a href=\"/\\d*/)(.*?html).*?(?<=>)(\\d*)(?=、.*?)");
 
+            var results = new List<Match>();
             
             //<a href="/23609/72550175.html">735、青春、理想和现实</a>
-            var results = latestChapter.Matches(ContentInfos.First());
+            foreach(string item in ContentInfos)
+            {
+                try
+                {
+                    results.Add(latestChapter.Matches(item).First());
+                }
+                //正则出错的时候不能够扔出来错误的
+                catch { }
+            }
             foreach (Match item in results)
             {
                 try
                 {
-                    dic.TryAdd(int.Parse(item.Groups[2].Value), item.Groups[1].Value);
+                    dic.Add(int.Parse(item.Groups[2].Value), item.Groups[1].Value);
                 }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Some error In Dic.add:  " + e.Message);
-                }
+                catch{ }
 
             }
         }

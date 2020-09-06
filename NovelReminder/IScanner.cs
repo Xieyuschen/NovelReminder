@@ -12,6 +12,5 @@ namespace NovelReminder
 
         ValueTask<IEnumerable<string>> GetCatalogAsync(string url);
 
-
     }
 }
