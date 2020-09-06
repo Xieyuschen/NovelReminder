@@ -107,7 +107,7 @@ namespace NovelReminder
                         await Task.Delay(TimeSpan.FromSeconds(Interval));
                     }
                 }
-                catch (SmtpException e)
+                catch (Exception e)
                 {
                     Console.WriteLine("DetectRecycleErrorMessage:  " + e.Message+e.StatusCode);
                 }
