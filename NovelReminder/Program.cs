@@ -30,8 +30,8 @@ namespace Try
             Reminder reminder = new Reminder(new DbFileServices(), em, new Scanner());
             reminder.AddBooksUrl("http://www.biquge.se/23609/");
             reminder.AddReceiver("2016231075@qq.com");
-            //await reminder.StartAsync();
-            await reminder.SenderForTesting();
+            await reminder.StartAsync();
+
         }
     }
 }

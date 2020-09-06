@@ -67,7 +67,6 @@ namespace NovelReminder
             try
             {
                 client.Send(msg);
-
             }
             catch(Exception e)
             {
