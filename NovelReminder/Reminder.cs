@@ -65,7 +65,10 @@ namespace NovelReminder
                     //CheckAnyNewAsync
                     if (!(await CheckAnyNewAsync(url)))
                     {
-                        Console.WriteLine($"Scan {i++} times");
+                        using (StreamWriter sw = File.AppendText("../../../log.txt"))
+                        {
+                            sw.WriteLine($"Scan {i++} times");
+                        }
                         await Task.Delay(TimeSpan.FromSeconds(Interval));
                     }
 
@@ -92,13 +95,18 @@ namespace NovelReminder
             {
                 if (await DataService.GetIsInit(url))
                 {
-                    Console.WriteLine("The program is running successfully!");
-                    //MessageBox.Show();
+                    using (StreamWriter sw = File.AppendText("../../../log.txt"))
+                    {
+                        sw.WriteLine("The program is running successfully!");
+                    }
                 }
                 else
                 {
                     await DataService.UpdateAsync(url, true);
-                    Console.WriteLine("Initialize the new novel and the reminder is running successfully!");
+                    using (StreamWriter sw = File.AppendText("../../../log.txt"))
+                    {
+                        sw.WriteLine("Initialize the new novel and the reminder is running successfully!");
+                    }
                 }
             }
             catch (Exception e)
