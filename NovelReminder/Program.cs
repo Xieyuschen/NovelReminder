@@ -20,36 +20,12 @@ namespace Try
 
     public class Program
     {
-        public static void SendMail()
-        {
-            var smtpClient = new SmtpClient("smtp.163.com")
-            {
-                //Port = ,
-                Credentials = new NetworkCredential("xieyuschen@163.com", "IAEKCLPMNAFLQATX"),
-                EnableSsl = true,
-                Timeout = 1000,
-                DeliveryMethod = SmtpDeliveryMethod.Network
-            };
-            var mailMessage = new MailMessage
-            {
-                From = new MailAddress("xieyuschen@163.com","xyc"),
-                Subject = "subject",
-                Body = "<h1>Hello</h1>",
-                IsBodyHtml = true,
-                Priority = MailPriority.High
-            };
-            mailMessage.To.Add("2016231075@qq.com");
-
-            smtpClient.Send(mailMessage);
-            
-        }
         static async System.Threading.Tasks.Task Main(string[] args)
         {
-            string emailToken=File.ReadAllText("../../../../Settings.txt");
             var option = new SmtpClientOptions
             {
                 Account = "xieyuschen@163.com",
-                Token = emailToken,
+                Token = "IAEKCLPMNAFLQATX",
                 Host = "smtp.163.com",
                 Port = 465,
                 EnableSsl = false
