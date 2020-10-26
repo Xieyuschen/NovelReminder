@@ -41,35 +41,25 @@ namespace Try
             mailMessage.To.Add("2016231075@qq.com");
 
             smtpClient.Send(mailMessage);
+            
         }
-        //static async System.Threading.Tasks.Task Main(string[] args)
-        static void Main(string[] args)
+        static async System.Threading.Tasks.Task Main(string[] args)
         {
-            SendMail();
-            //smtpClient.Send("email", "recipient", "subject", "body");
-            ////string emailToken=File.ReadAllText("Settings.txt");
-            //var option = new SmtpClientOptions
-            //{
-            //    Account = "xieyuschen@163.com",
-            //    Token = "IAEKCLPMNAFLQATX",
-            //    Host = "smtp.163.com",
-            //    Port = 465,
-            //    EnableSsl = false
-            //};
-            //var em = new EmailService(option);
-            //var mail = new MailOptions
-            //{
-            //    SenderName = "xieyuschen@163.com",
-            //    Subject = "test",
-            //    Recievers = new List<string> { "u201811225@hust.edu.cn" },
-            //    Body = "hello"
-            //};
-            //em.SendEmail(mail);
-            //Reminder reminder = new Reminder(new DbFileServices(), em, new Scanner());
-            //reminder.AddBooksUrl("http://www.biquge.se/23609/");
-            //reminder.AddReceiver("2016231075@qq.com");
-            //await reminder.StartAsync();
+            string emailToken=File.ReadAllText("../../../../Settings.txt");
+            var option = new SmtpClientOptions
+            {
+                Account = "xieyuschen@163.com",
+                Token = emailToken,
+                Host = "smtp.163.com",
+                Port = 465,
+                EnableSsl = false
+            };
+            var em = new EmailService(option);
 
+            Reminder reminder = new Reminder(new DbFileServices(), em, new Scanner());
+            reminder.AddBooksUrl("http://www.biquge.se/23609/");
+            reminder.AddReceiver("2016231075@qq.com");
+            await reminder.StartAsync();
         }
     }
 }

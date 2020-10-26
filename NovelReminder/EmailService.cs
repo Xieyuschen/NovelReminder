@@ -45,7 +45,7 @@ namespace NovelReminder
             client.DeliveryMethod = SmtpDeliveryMethod.Network;
             account = options.Account;
             client.Host = options.Host;
-            client.Port = options.Port;
+           
 
             //client.Credentials = new NetworkCredential(options.Account, options.Token);
             client.Credentials = new NetworkCredential("xieyuschen@163.com", options.Token);
