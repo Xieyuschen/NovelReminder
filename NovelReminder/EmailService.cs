@@ -41,7 +41,7 @@ namespace NovelReminder
             client = new SmtpClient();
             client.EnableSsl = true;// options.EnableSsl;
 
-            client.UseDefaultCredentials = false;
+            client.UseDefaultCredentials = true;
             client.DeliveryMethod = SmtpDeliveryMethod.Network;
             account = options.Account;
             client.Host = options.Host;
@@ -70,7 +70,7 @@ namespace NovelReminder
             }
             catch(Exception e)
             {
-                Console.WriteLine("Failed to send email beacuse " + e.Message);
+                Console.WriteLine(e.GetType());
             }
         }
     }
