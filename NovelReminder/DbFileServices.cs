@@ -45,7 +45,7 @@ namespace NovelReminder
     class DbFileServices : IDataManager
     {
         private List<NovelInfo> Information {get;set;}
-        private string filename = "NovelInfomation.txt";
+        private string filename = "../../../NovelInfomation.txt";
         private void RewriteTxtFile()
         {
             //rewrite txt file when some records are updated
